@@ -25,16 +25,18 @@ public class MemberRepository {
     }
 
     public Optional<Member> findByLoginId(String loginId) {
-        /*List<Member> all = findAll();
+        /*
+        List<Member> all = findAll();
         for (Member m : all) {
             if (m.getLoginId().equals(longId)) {
                 return Optional.of(m);
             }
         }
-        return Optional.empty();*/
+        return Optional.empty();
+        */
 
         return findAll().stream() // 반복문처럼 전체를 순환함
-                .filter(m -> m.getLoginId().equals(loginId)) // 조건에 만족하는 것만 다음 단계로 넘어감
+                .filter(member -> member.getLoginId().equals(loginId)) // 조건에 만족하는 것만 다음 단계로 넘어감
                 .findFirst(); // 먼저 나온 것을 반환
     }
 
