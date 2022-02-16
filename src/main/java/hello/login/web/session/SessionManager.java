@@ -47,13 +47,13 @@ public class SessionManager {
         if (sessionCookie == null) {
             return null;
         }
-        // 있을 경우, 인증용 쿠키인 "mySessuinId"의 value인 UUID를 sessionStore의 키 값으로 진짜 쿠키를 찾는다.
+        // 있을 경우, 인증용 쿠키인 "mySessuinId"의 value인 UUID를 sessionStore의 키 값으로 저장된 객체를 찾는다.
         return sessionStore.get(sessionCookie.getValue());
     }
 
     /**
-
-     **/
+     * 세션 삭제
+     */
     public void expire(HttpServletRequest request) {
         Cookie sessionCookie = findCookie(request, SESSION_COOKIE_NAME);
         // 인증용 쿠키인 "mySessuinId"가 존재하면
