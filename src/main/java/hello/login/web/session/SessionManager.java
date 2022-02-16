@@ -1,4 +1,5 @@
 package hello.login.web.session;
+
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
@@ -8,7 +9,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 
 /**
  * 세션 관리
@@ -63,7 +63,6 @@ public class SessionManager {
         }
 
     }
-
 
     public Cookie findCookie(HttpServletRequest request, String cookieName) {
         if (request.getCookies() == null) {

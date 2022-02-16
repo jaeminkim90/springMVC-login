@@ -2,6 +2,7 @@ package hello.login.web;
 
 import hello.login.domain.member.Member;
 import hello.login.domain.member.MemberRepository;
+import hello.login.web.session.SessionManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Slf4j
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class HomeController {
 
     private final MemberRepository memberRepository;
+    private final SessionManager sessionManager;
 
     //  @GetMapping("/")
     public String home() {
@@ -24,7 +27,7 @@ public class HomeController {
     }
 
 
-    @GetMapping("/")
+    // @GetMapping("/")
     public String homeLogin(@CookieValue(name = "memberId", required = false) Long memberId, Model model) {
 
         // 쿠키가 없는 사용자는 home으로 보낸다
@@ -42,6 +45,22 @@ public class HomeController {
 
         // 객체가 있을 경우 모델에 해당 객체를 담아 '로그인 사용자 전용 home 화면'으로 보낸다
         model.addAttribute("member", loginMember);
+        return "loginHome";
+    }
+
+    @GetMapping("/")
+    public String homeLoginV2(HttpServletRequest request, Model model) {
+
+        // 세션 관리자에 저장된 회원 정보를 조회
+        Member member = (Member)sessionManager.getSession(request);
+
+        // 객체가 없을 경우 home으로 보낸다
+        if (member == null) {
+            return "home";
+        }
+
+        // 객체가 있을 경우 모델에 해당 객체를 담아 '로그인 사용자 전용 home 화면'으로 보낸다
+        model.addAttribute("member", member);
         return "loginHome";
     }
 }
