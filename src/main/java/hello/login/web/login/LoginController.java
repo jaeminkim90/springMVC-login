@@ -110,17 +110,28 @@ public class LoginController {
         return "redirect:/";
     }
 
-    // 로그아웃 처리
+    // 로그아웃 처리 - V1
     // @PostMapping("/logout")
     public String logout(HttpServletResponse response) {
         expireCookie(response, "memberId");
         return "redirect:/";
     }
 
-    // 로그아웃 처리
-    @PostMapping("/logout")
+    // 로그아웃 처리 - V2
+    // @PostMapping("/logout")
     public String logoutV2(HttpServletRequest request) {
         sessionManager.expire(request);
+        return "redirect:/";
+    }
+
+    // 로그아웃 처리 - V3
+    @PostMapping("/logout")
+    public String logoutV3(HttpServletRequest request) {
+        // 새로 생성하지 않는 조건(false)로 세션을 조회한다
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate(); // 세션 정보를 삭제한다
+        }
         return "redirect:/";
     }
 
