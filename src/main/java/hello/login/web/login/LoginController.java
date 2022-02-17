@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -84,7 +85,7 @@ public class LoginController {
     }
 
     // Post 요청 시, 검증을 담당하는 @Valid와 에러 메시지를 관리하는 BindingResult가 필요하다
-    @PostMapping("/login")
+    // @PostMapping("/login")
     public String loginV3(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
@@ -109,6 +110,36 @@ public class LoginController {
 
         return "redirect:/";
     }
+
+    // Post 요청 시, 검증을 담당하는 @Valid와 에러 메시지를 관리하는 BindingResult가 필요하다
+    @PostMapping("/login")
+    public String loginV4(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult,
+                          @RequestParam(defaultValue = "/") String redirectURL,
+                          HttpServletRequest request) {
+
+        if (bindingResult.hasErrors()) {
+            // bindingResult에 문제가 있으면 다시 돌려보낸다.
+            return "login/loginForm";
+        }
+
+        // 성공로직: form에서 id와 password 꺼내서 검증한다
+        Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
+
+        // id와 pass가 맞지 않을 경우 bindingResult를 사용하여 에러 메시지를 출력한다
+        if (loginMember == null) {
+            bindingResult.reject("loginFail", "아이디 또는 비밀번호 오류");
+            return "login/loginForm";
+        }
+
+        // 로그인 성공 처리
+        // getSession()은 세션이 있으면 있는 세션을 반환하고, 없으면 신규 세션을 생성한다
+        HttpSession session = request.getSession();
+        // 세션의 로그인 회원 정보를 보관한다
+        session.setAttribute(SessionConstant.LOGIN_MEMBER, loginMember);
+
+        return "redirect:"+ redirectURL; // 직전 URL 정보가 parameter에 있으면 로그인 후 해당 url로 보낸다.
+    }
+
 
     // 로그아웃 처리 - V1
     // @PostMapping("/logout")
