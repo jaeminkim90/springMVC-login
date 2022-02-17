@@ -33,8 +33,5 @@ public class SessionInfoController {
         log.info("isNew={}", session.isNew()); // 새로 생성된 세션 여부
 
         return "세션 출력";
-
-
     }
-
 }
